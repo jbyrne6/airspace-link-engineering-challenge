@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import Map from './components/Map';git push -u origin main
+import Map from './components/Map';
 import { Button } from 'antd';
 import { useStore } from './stores/RootStore';
 import { observer } from 'mobx-react-lite';

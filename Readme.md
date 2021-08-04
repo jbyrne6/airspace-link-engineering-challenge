@@ -5,13 +5,13 @@ This application is a basic React/TypeScript starter app for Esri based applicat
 ## Technologies Demonstrated
 
 - [TypeScript](https://www.typescriptlang.org/): Extends JavaScript to adding data types.
-- [React](https://reactjs.org/): Rendering engine for interactive UIs
+- [React](https://reactjs.org/): Rendering engine for interactive UIs. Includes setup with react-refresh for hot module reloading
 - [WebPack](https://webpack.js.org/): Bundles the various JavaScript/TypeScript files together into a final "bundled" version for the web server
 - [AntD](https://ant.design/components/overview/): React base UI component library
 - [Styled Components](https://styled-components.com/): Reusable and isoloated component styling for React applications
 - [Mobx](https://github.com/mobxjs/mobx): Full featured and reactive state management
 - [SASS](https://sass-lang.com/): CSS Precompiler. Allows you to build css with variables and logic.
-- [ESRIO](https://developers.arcgis.com/javascript/latest/): Esri JavaScript map SDK
+- [ESRI](https://developers.arcgis.com/javascript/latest/): Esri JavaScript map SDK
 
 ## Getting Started
 
@@ -21,7 +21,7 @@ It is assumed that you already have `node` and `yarn` installed on your machine.
 
 `yarn install`
 
-### Start a local development web server
+### Start a local development web server (webpack-dev-server)
 
 `yarn start`
 
