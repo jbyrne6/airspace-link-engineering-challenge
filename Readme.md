@@ -33,7 +33,7 @@ It is assumed that you already have `node` and `yarn` installed on your machine.
 
 `yarn lint`
 
-### Non-existant tests
+### Non-existent tests
 
 `yarn test`
 
