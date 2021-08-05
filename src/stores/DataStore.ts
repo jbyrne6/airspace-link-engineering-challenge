@@ -1,4 +1,4 @@
-import { makeAutoObservable, flow } from 'mobx';
+import { makeAutoObservable } from 'mobx';
 import { getSampleData } from '../services/SampleDataService';
 import RootStore from './RootStore';
 
@@ -23,12 +23,12 @@ export default class DataStore {
   // Learn more about async flows: https://www.mobxjs.com/best/actions.html#flows
   *loadSampleData() {
     this.updateState(STATES.LOADING);
-    const response: GeoJSON.FeatureCollection = yield getSampleData();
-    this.rootStore.mapStore.addData(response);
+    const data: GeoJSON.FeatureCollection = yield getSampleData();
+    this.rootStore.mapStore.addData(data);
     this.updateState(STATES.LOADED);
   }
 
-  clearData() {
+  clearSampleData() {
     this.rootStore.mapStore.clearData();
   }
 

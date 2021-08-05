@@ -108,7 +108,7 @@ const commonConfig = {
     // Clean contents of "dist" folder
     new CleanWebpackPlugin(),
 
-    // Copies files/folders from/to locations
+    // Copies files/folders from/to bundled locations
     new CopyPlugin({ patterns: [{ from: 'sampleData', to: 'sampleData' }] }),
 
     new ArcGISPlugin({

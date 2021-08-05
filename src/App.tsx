@@ -21,9 +21,9 @@ const App = () => {
     <div>
       <ButtonWrapper>
         <Button onClick={dataStore.loadSampleData} loading={dataStore.isLoading}>
-          Sample Load
+          Load Sample
         </Button>
-        <Button onClick={dataStore.clearData} style={{ marginLeft: '10px' }}>
+        <Button onClick={dataStore.clearSampleData} style={{ marginLeft: '5px' }}>
           Clear Sample
         </Button>
       </ButtonWrapper>
