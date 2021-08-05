@@ -109,7 +109,7 @@ const commonConfig = {
     new CleanWebpackPlugin(),
 
     // Copies files/folders from/to locations
-    //new CopyPlugin({ patterns: [{ from: 'assets', to: 'assets' }] }),
+    new CopyPlugin({ patterns: [{ from: 'sampleData', to: 'sampleData' }] }),
 
     new ArcGISPlugin({
       // The sketch widget requires the 3d widget
@@ -184,10 +184,10 @@ const productionConfig = {
       maxInitialRequests: 30,
       enforceSizeThreshold: 50000,
       cacheGroups: {
-        esriVendor: {
-          test: /[\\/]node_modules[\\/](@arcgis)[\\/]/,
-          name: 'esri',
-        },
+        // esriVendor: {
+        //   test: /[\\/]node_modules[\\/](@arcgis)[\\/]/,
+        //   name: 'esri',
+        // },
         vendors: {
           test: /[\\/]node_modules[\\/]/,
           priority: -10,

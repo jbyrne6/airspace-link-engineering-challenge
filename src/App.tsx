@@ -20,8 +20,11 @@ const App = () => {
   return (
     <div>
       <ButtonWrapper>
-        <Button onClick={dataStore.loadFakeData} loading={dataStore.isLoading}>
-          Fake Load
+        <Button onClick={dataStore.loadSampleData} loading={dataStore.isLoading}>
+          Sample Load
+        </Button>
+        <Button onClick={dataStore.clearData} style={{ marginLeft: '10px' }}>
+          Clear Sample
         </Button>
       </ButtonWrapper>
       <Map />

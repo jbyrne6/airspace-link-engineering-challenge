@@ -1,5 +1,5 @@
 import { makeAutoObservable, flow } from 'mobx';
-import { getFakeData } from '../services/FakeDataService';
+import { getSampleData } from '../services/SampleDataService';
 import RootStore from './RootStore';
 
 const STATES = {
@@ -21,10 +21,15 @@ export default class DataStore {
 
   // Generator function is automatically bound to 'this' in the constructor
   // Learn more about async flows: https://www.mobxjs.com/best/actions.html#flows
-  *loadFakeData() {
+  *loadSampleData() {
     this.updateState(STATES.LOADING);
-    yield getFakeData();
+    const response: GeoJSON.FeatureCollection = yield getSampleData();
+    this.rootStore.mapStore.addData(response);
     this.updateState(STATES.LOADED);
+  }
+
+  clearData() {
+    this.rootStore.mapStore.clearData();
   }
 
   // Inferred as an 'action'
