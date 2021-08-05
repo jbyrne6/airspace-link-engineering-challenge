@@ -1,8 +1,8 @@
 import React from 'react';
-import Map from './Map';
+import Map from '../Map';
 import { render } from '@testing-library/react';
 
-jest.mock('../stores/RootStore');
+jest.mock('../../stores/RootStore');
 
 describe('Map', () => {
   test('should render the component with a map selector', async () => {

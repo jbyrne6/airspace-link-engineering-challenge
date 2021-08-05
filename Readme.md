@@ -12,6 +12,9 @@ This application is a basic React/TypeScript starter app for Esri based applicat
 - [Mobx](https://github.com/mobxjs/mobx): Full featured and reactive state management
 - [SASS](https://sass-lang.com/): CSS Precompiler. Allows you to build css with variables and logic.
 - [ESRI](https://developers.arcgis.com/javascript/latest/): Esri JavaScript map SDK
+- [Babel](https://babeljs.io/): JavaScript "compiler"
+- [Jest](https://jestjs.io/): Jest is a delightful JavaScript Testing Framework with a focus on simplicity.
+- [Testing Library](https://testing-library.com/docs/): Simple and complete testing utilities that encourage good testing practices
 
 ## Getting Started
 
@@ -33,7 +36,13 @@ It is assumed that you already have `node` and `yarn` installed on your machine.
 
 `yarn lint`
 
+### Verify all TypeScripts are in good working order
+
+`yarn tsc`
+
 ### Non-existent tests
+
+See documentation on writing tests at [Testing Library](https://testing-library.com/docs/)
 
 `yarn test`
 
