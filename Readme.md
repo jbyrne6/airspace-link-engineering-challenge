@@ -41,7 +41,7 @@ It is assumed that you already have `node` and `yarn` installed on your machine.
 See documentation on writing tests at [Testing Library](https://testing-library.com/docs/)
 `yarn test`
 
-## Technologies Demonstrated
+## Technologies included in this template
 - [TypeScript](https://www.typescriptlang.org/): Extends JavaScript to adding data types
 - [React](https://reactjs.org/): Rendering engine for interactive UIs. Includes setup with react-refresh for hot module reloading
 - [WebPack](https://webpack.js.org/): Bundles the various JavaScript/TypeScript files together into a final "bundled" version for the web server
