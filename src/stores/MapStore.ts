@@ -29,8 +29,8 @@ export default class MapStore {
     const view = new MapView({
       map: this.map,
       container,
-      center: [-83.221564, 42.446424], // Longitude, latitude
-      zoom: 9,
+      center: [-83.35447311401367, 42.23982914405], // Longitude, latitude
+      zoom: 11,
     });
 
     // When the view finishes loading, add the sketch widget
