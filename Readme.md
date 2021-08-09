@@ -1,25 +1,26 @@
 ## Description
-Thanks to your [Part 107 Commercial Drone Pilot's license](https://www.faa.gov/uas/), you've been hired by an electrical company to inspect power lines using aerial drone videography. To understand if you are legally allowed to fly in this area, you've requested data from the FAA to indicate what airspace near your flight(s) - if any - is [controlled](https://www.faa.gov/uas/recreational_fliers/where_can_i_fly/airspace_101/) and thus not approved for drone flights. The FAA returned to you an array of coordinates in [geoJson](https://geojson.org/) representing a polygon of controlled airspace. Your job is to modify an existing web application and add functionality to give you this insight.
+Thanks to your [Part 107 Commercial Drone Pilot's license](https://www.faa.gov/uas/), you've been hired by an electrical company to inspect power lines using aerial drone videography. To understand if you are legally allowed to fly in this area, you've requested data from the FAA to indicate what airspace near your flight(s) - if any - is [controlled](https://www.faa.gov/uas/recreational_fliers/where_can_i_fly/airspace_101/) and thus not approved for drone flights. The FAA returned to you an array of coordinates in [geoJson](https://geojson.org/) representing a polygon of controlled airspace. Your job is to add functionality to an existing web application to provide this insight.
 
 ## Requirements
-We have provided a starter web application that has everything you need to accomplish the task. The setup instructions are below. Once you have the app up and running, click the Load Sample button to display the FAA-provided controlled airspace polygon. Using the sketch tools you can draw shapes of your various flight areas on the map. After a sketch is complete, your work should display which portion of the sketch is in controlled airspace (i.e. any area that intersects the FAA polygon).
+We have provided a starter web application that has just about everything you need to accomplish the task. The application setup instructions are below. Once you have the app up and running, click the Load Sample button to display the FAA-provided controlled airspace. Using the sketch tools you can draw shapes of your various flight areas on the map. After a sketch is complete, your work should display which portion - if any - of the sketch is in controlled airspace (i.e. any area that intersects the FAA polygon).
 
-- Display a message somewhere on the page indicating whether this flight will be approved (it intersects) or denied (it does not insersect)
-- Also display the area (in sq meters or sq kilometers) of the intersection, if any
-- It'd also be great if you highlighted the intersection shape with a different color so that it is easy to see
-- Hint: the app we provided uses the [AntD](https://ant.design/components/overview/) library. Implement a component of your choice to display the information. Or choose your own UI library to implement.
-- Hint: implement [TurfJS](https://turfjs.org/) for intersections
+- Display a message somewhere on the page indicating whether this flight will be approved (**it intersects**) or denied (**it does not intersect**)
+- Display the area (in sq meters or sq kilometers) of the intersection, if any
+- It'd also be great to see the intersection shape highlighted with a different color so that it is easy to visualize
+- Hint: the app we provided uses the [AntD](https://ant.design/components/overview/) library. Use an AntD component of your choice to display the information. Or choose your own UI library to implement.
+- Hint: implement [TurfJS](https://turfjs.org/) to help you determine if two polygons overlap
 
-At Airspace Link, we feel strongly about good communication. Make sure to provide a `README.md` which explains your approach, both from a functional and code perspective. Pay attention to grammar; good writing will always win us over. This doesn't have to be an exhaustive document; just give us some basic information to give us insight into your thought process. You also might include a list of ideas you'd love to tackle if you had infinite time to work on the app.
+#### Notes
+If you are applying for the Frontend Developer position, completing the above requirements will suffice. If you are applying for Full Stack Developer, you may want to show your backend skills by spinning up an API to handle the "Can I Fly?" logic. Whether you combine frontend and backend into one challenge is up to you.
 
-This challenge should not take more than 2-3 hours. You have the base requirements, but feel free to go above and beyond as this is your chance to show off your skills and creativity! We understand that doing your best work can often take significant time - and we all have busy personal lives - but please try to finish within one week. Happy coding, and don't hesitate to reach out with any questions. When it's ready, send us a link to the completed project. Please make your repo private and give access to `fieldsco` and `ddbradshaw` so we can review your work.
+At Airspace Link, we feel strongly about good communication. Make sure to provide a short `README.md` which explains your approach. Pay attention to grammar; good writing will always win us over. You also might include a list of ideas you'd love to tackle if you had infinite time to work on the app.
+
+This challenge should not take more than 2-3 hours. You have the base requirements, but feel free to go above and beyond as this is your chance to show off your skills and creativity! We understand that doing your best work can often take significant time, but please try to finish within one week. When it's ready, send us a link to the completed project. Please make your repo private and give access to `fieldsco` and `ddbradshaw`.
 
 #### Extra credit ideas
 - Deploy your project to [Github Pages](https://pages.github.com/)
-- Spin up a NodeJS/Express (or similar framework) API to demonstrate how you'd persist the drawn shapes
-- Provide a layer control to toggle the visibility of your flight area and the FAA polygon
+- Provide a layer control to toggle the visibility of your flight area
 - Add unit/snapshot tests
-- Allow the user to input a flight start time (hh:mm ampm). If there is a flight area sketch on the page, find the centroid, figure out the timezone of that point, then tack on a timezone to the start time. This scenario would come into play if the user were planning to fly in a different time zone than their current one.
 - <insert your awesome idea here!>
 
 ## Setup instructions
