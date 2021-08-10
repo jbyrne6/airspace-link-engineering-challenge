@@ -109,7 +109,7 @@ const commonConfig = {
     new CleanWebpackPlugin(),
 
     // Copies files/folders from/to bundled locations
-    new CopyPlugin({ patterns: [{ from: 'sampleData', to: 'sampleData' }] }),
+    //new CopyPlugin({ patterns: [{ from: 'sampleData', to: 'sampleData' }] }),
 
     new ArcGISPlugin({
       // The sketch widget requires the 3d widget

@@ -4,12 +4,17 @@ import ArcGISMap from '@arcgis/core/Map';
 import MapView from '@arcgis/core/views/MapView';
 import Sketch from '@arcgis/core/widgets/Sketch';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
-import GeoJSONLayer from '@arcgis/core/layers/GeoJSONLayer';
+import Graphic from '@arcgis/core/Graphic';
+import Polygon from '@arcgis/core/geometry/Polygon';
+import { geojsonToArcGIS } from '@esri/arcgis-to-geojson-utils';
+import sample from '../sample';
 
 export default class MapStore {
   rootStore: RootStore;
   map!: __esri.Map;
-  geoJsonLayer!: __esri.GeoJSONLayer;
+  noFlyLayer!: __esri.GraphicsLayer;
+  sketchLayer!: __esri.GraphicsLayer;
+  sketch!: __esri.Sketch;
 
   constructor(rootStore: RootStore) {
     //makeAutoObservable(this, { rootStore: false });
@@ -17,15 +22,39 @@ export default class MapStore {
   }
 
   constructMap(container: string) {
-    const sketchLayer = new GraphicsLayer();
+    this.sketchLayer = new GraphicsLayer();
+    this.noFlyLayer = new GraphicsLayer();
+
+    // Construct a compatible polygon from the sample data
+    // First convert the sample data to a json format compatible with the map
+    // https://www.npmjs.com/package/@esri/arcgis-to-geojson-utils
+    const geometry = new Polygon(geojsonToArcGIS(sample));
+
+    // Define a symbol
+    // https://developers.arcgis.com/javascript/latest/api-reference/esri-symbols-SimpleFillSymbol.html
+    const symbol = {
+      type: 'simple-fill',
+      color: [51, 51, 204, 0.2],
+      style: 'solid',
+      outline: {
+        color: 'white',
+        width: 2,
+      },
+    };
+
+    // Construct map graphic
+    // https://developers.arcgis.com/javascript/latest/api-reference/esri-Graphic.html
+    this.noFlyLayer.add(new Graphic({ geometry, symbol }));
 
     // Create the map and add the graphics layer
+    // https://developers.arcgis.com/javascript/latest/api-reference/esri-Map.html
     this.map = new ArcGISMap({
       basemap: 'streets-vector',
-      layers: [sketchLayer],
+      layers: [this.noFlyLayer, this.sketchLayer],
     });
 
     // Set the map view, including location and zoom level
+    // https://developers.arcgis.com/javascript/latest/api-reference/esri-views-MapView.html
     const view = new MapView({
       map: this.map,
       container,
@@ -34,37 +63,31 @@ export default class MapStore {
     });
 
     // When the view finishes loading, add the sketch widget
+    // https://developers.arcgis.com/javascript/latest/api-reference/esri-widgets-Sketch.html
     view.when(() => {
-      const sketch = new Sketch({
-        layer: sketchLayer,
+      this.sketch = new Sketch({
+        layer: this.sketchLayer,
         view,
-        // graphic will be selected as soon as it is created
-        creationMode: 'update',
+        creationMode: 'update', // graphic will be selected as soon as it is created
       });
+      view.ui.add(this.sketch, 'top-right');
 
-      view.ui.add(sketch, 'top-right');
+      this.createSketchListeners();
     });
   }
 
-  addData = (geoJson: GeoJSON.FeatureCollection) => {
-    // Clear any existing data
-    this.clearData();
-
-    // Create a blob of the GEOJSON feature collection to
-    // serve up to the ESRI GEOJSONLayer via object URL
-    const blob = new Blob([JSON.stringify(geoJson)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    this.geoJsonLayer = new GeoJSONLayer({ url });
-
-    // Add data to map
-    this.map.add(this.geoJsonLayer);
-  };
-
-  clearData() {
-    if (this.geoJsonLayer) this.map.remove(this.geoJsonLayer);
+  createSketchListeners() {
+    this.sketch.on('create', function (event) {
+      // check if the create event's state has changed to complete indicating
+      // the graphic create operation is completed.
+      if (event.state === 'complete') {
+        // TODO: What happens when the sketch is complete?
+      }
+    });
   }
 
   cleanup() {
     // Todo, remove any listeners
+    this.sketch.destroy();
   }
 }
