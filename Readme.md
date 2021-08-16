@@ -25,6 +25,7 @@ This challenge should not take more than 2-3 hours. You have the base requiremen
 #### Extra credit ideas
 
 - Deploy your project to [GitHub Pages](https://pages.github.com/)
+- Update the intersection graphic and computed area when the sketch is updated
 - Provide a layer control to toggle the visibility of your flight area
 - Add unit/snapshot tests
 - <insert your awesome idea here!>
