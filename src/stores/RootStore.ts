@@ -1,6 +1,5 @@
 import { createContext, useContext } from 'react';
 import MapStore from './MapStore';
-import DataStore from './DataStore';
 
 // Experimenting with mobx linting:
 // https://mobx.js.org/configuration.html#linting-options
@@ -15,11 +14,9 @@ configure({
 
 export default class RootStore {
   mapStore: MapStore;
-  dataStore: DataStore;
 
   constructor() {
     this.mapStore = new MapStore(this);
-    this.dataStore = new DataStore(this);
   }
 }
 
