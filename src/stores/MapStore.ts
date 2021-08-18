@@ -126,12 +126,14 @@ export default class MapStore {
     // HINT: you can use the geometry engine to calculate area of a polygon
     // https://developers.arcgis.com/javascript/latest/api-reference/esri-geometry-geometryEngine.html#geodesicArea
 
+    // HINT: you can create a graphic using a Graphic object
+    // https://developers.arcgis.com/javascript/latest/api-reference/esri-Graphic.html#symbol
+
+    // HINT: you can provide a symbol when creating this graphic to change its appearance
+    // https://developers.arcgis.com/javascript/latest/sample-code/playground/live/index.html#/config=symbols/2d/SimpleFillSymbol.json
+
     // HINT: you can add a new Graphic to this.sketchLayer to display it on the map
     // https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-GraphicsLayer.html#add
-
-    // HINT: you can provide a symbol when creating a graphic to change its appearance
-    // https://developers.arcgis.com/javascript/latest/api-reference/esri-Graphic.html#symbol
-    // https://developers.arcgis.com/javascript/latest/sample-code/playground/live/index.html#/config=symbols/2d/SimpleFillSymbol.json
   };
 
   cleanup() {
