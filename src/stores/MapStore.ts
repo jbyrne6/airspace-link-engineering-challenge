@@ -3,9 +3,11 @@ import RootStore from './RootStore';
 import ArcGISMap from '@arcgis/core/Map';
 import MapView from '@arcgis/core/views/MapView';
 import Sketch from '@arcgis/core/widgets/Sketch';
+import * as geometryEngine from '@arcgis/core/geometry/geometryEngine';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import Graphic from '@arcgis/core/Graphic';
 import Polygon from '@arcgis/core/geometry/Polygon';
+import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
 
 export default class MapStore {
   rootStore: RootStore;
@@ -113,7 +115,7 @@ export default class MapStore {
     // HINT: the event has a graphic property which has a geometry property
     // https://developers.arcgis.com/javascript/latest/api-reference/esri-geometry-Geometry.html
 
-    // HINT: you can use getItemAt to access one of the graphics of the faaLayer.
+    // HINT: you can use getItemAt to access one of the graphics of the noFlyLayer.
     // https://developers.arcgis.com/javascript/latest/api-reference/esri-core-Collection.html#getItemAt
     // https://developers.arcgis.com/javascript/latest/api-reference/esri-Graphic.html
 
@@ -123,8 +125,12 @@ export default class MapStore {
     // HINT: you can use the geometry engine to calculate area of a polygon
     // https://developers.arcgis.com/javascript/latest/api-reference/esri-geometry-geometryEngine.html#geodesicArea
 
-    // HINT: you can add a new Graphic to the view's graphics collection to display it on the map
-    // https://developers.arcgis.com/javascript/latest/api-reference/esri-views-MapView.html#graphics
+    // HINT: you can add a new Graphic to this.sketchLayer to display it on the map
+    // https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-GraphicsLayer.html#add
+
+    // HINT: you can provide a symbol when creating a graphic to change its appearance
+    // https://developers.arcgis.com/javascript/latest/api-reference/esri-Graphic.html#symbol
+    // https://developers.arcgis.com/javascript/latest/sample-code/playground/live/index.html#/config=symbols/2d/SimpleFillSymbol.json
   };
 
   cleanup() {
