@@ -4,12 +4,14 @@ import styled from 'styled-components';
 import { useStore } from './stores/RootStore';
 import { observer } from 'mobx-react-lite';
 
-const StateWrapper = styled.div`
+const Info = styled.p`
   position: absolute;
   z-index: 100;
   top: 15px;
   left: 60px;
-  background-color: white;
+  background-color: black;
+  color: white;
+  padding: 10px;
   height: 100px;
   width: 200px;
 `;
@@ -18,16 +20,8 @@ const App = () => {
   const { mapStore } = useStore();
   return (
     <>
-      <StateWrapper>
-        <p>
-          Sketch State:{' '}
-          {
-            // HINT: you can bind to properties in the map store like this:
-            mapStore.sketchState
-          }
-        </p>
-      </StateWrapper>
-
+      {/* HINT: you can bind to properties in the map store like this: */}
+      <Info>{`Sketch State: ${mapStore.sketchState}`}</Info>
       <Map />
     </>
   );

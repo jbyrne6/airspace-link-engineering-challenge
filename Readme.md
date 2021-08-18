@@ -1,18 +1,15 @@
 ## Description
 
-Thanks to your [Part 107 Commercial Drone Pilot's license](https://www.faa.gov/uas/), you've been hired by an electrical company to inspect power lines using aerial drone videography. To understand if you are legally allowed to fly in this area, you've requested data from the FAA to indicate what airspace near your flight(s) - if any - is [controlled](https://www.faa.gov/uas/recreational_fliers/where_can_i_fly/airspace_101/) and thus not approved for drone flights. The FAA returned to you an array of coordinates in [geoJson](https://geojson.org/) representing a polygon of controlled airspace. Your job is to add functionality to an existing web application to provide this insight.
+Thanks to your [Part 107 Commercial Drone Pilot's license](https://www.faa.gov/uas/), you've been hired by an electrical company to inspect power lines using aerial drone videography. To understand if you are legally allowed to fly in this area, you've requested data from the FAA to indicate what airspace near your flight(s) - if any - is [controlled](https://www.faa.gov/uas/recreational_fliers/where_can_i_fly/airspace_101/) and thus not approved for drone flights. The FAA returned to you an array of coordinates in [geoJson](https://geojson.org/) representing a polygon of controlled airspace, which is a "no fly zone". Your job is to add functionality to an existing web application to provide this insight.
 
 ## Requirements
 
-We have provided a starter web application that has just about everything you need to accomplish the task. The application setup instructions are below. Once you have the app up and running, click the Load Sample button to display the FAA-provided controlled airspace. Using the sketch tools you can draw shapes of your various flight areas on the map. After a sketch is complete, your work should display which portion - if any - of the sketch is in controlled airspace (i.e. any area that intersects the FAA polygon).
+We have provided a starter web application that has just about everything you need to accomplish the task. The application setup instructions are below. Once you have the app up and running, you will see the polygon of controlled "no fly" airspace on the map. Using the sketch tool you can draw shapes of your various flight areas on the map. After a sketch is complete, your work should display which portion - if any - of the sketch is in controlled airspace (i.e. any area that intersects the controlled airspace polygon).
 
-- Display a message somewhere on the page indicating whether this flight will be approved (**it intersects**) or denied (**it does not intersect**)
+- Search the code for "HINT" - these will help you along
+- Display a message in the `Info` component indicating whether this flight will be approved (**it intersects**) or denied (**it does not intersect**)
 - Display the area (in sq meters or sq kilometers) of the intersection, if any
 - It'd also be great to see the intersection shape highlighted with a different color so that it is easy to visualize
-- Hint: the app we provided uses the [AntD](https://ant.design/components/overview/) library. Use an AntD component of your choice to display the information. Or choose your own UI library to implement.
-- Hint: you can use the ESRI geometryEngine to [calculate the intersection](https://developers.arcgis.com/javascript/latest/api-reference/esri-geometry-geometryEngine.html#intersect) of two polygons (i.e. determine if they overlap)
-- Hint: you can use the ESRI geometryEngine to [calculate the area](https://developers.arcgis.com/javascript/latest/api-reference/esri-geometry-geometryEngine.html#geodesicArea) of a polygon
-- Hint you can use [MobX Observable state](https://mobx.js.org/observable-state.html) to bind the view to data in the stores
 
 #### Notes
 
@@ -25,7 +22,7 @@ This challenge should not take more than 2-3 hours. You have the base requiremen
 #### Extra credit ideas
 
 - Deploy your project to [GitHub Pages](https://pages.github.com/)
-- Update the intersection graphic and computed area when the sketch is updated
+- Update the intersection graphic and computed area when the sketch is moved (i.e. clicked and dragged)
 - Provide a layer control to toggle the visibility of your flight area
 - Add unit/snapshot tests
 - <insert your awesome idea here!>
