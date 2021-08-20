@@ -7,7 +7,7 @@ Thanks to your [Part 107 Commercial Drone Pilot's license](https://www.faa.gov/u
 We have provided a starter web application that has just about everything you need to accomplish the task. The application setup instructions are below. Once you have the app up and running, you will see the polygon of controlled "no fly" airspace on the map. Using the sketch tool you can draw shapes of your various flight areas on the map. After a sketch is complete, your work should display which portion - if any - of the sketch is in controlled airspace (i.e. any area that intersects the controlled airspace polygon).
 
 - Search the code for "HINT" - these will help you along
-- Display a message in the `Info` component indicating whether this flight will be approved (**it intersects**) or denied (**it does not intersect**)
+- Display a message in the `Info` component indicating whether this flight will be denied (**it intersects**) or approved (**it does not intersect**)
 - Display the area (in sq meters or sq kilometers) of the intersection, if any
 - It'd also be great to see the intersection shape highlighted with a different color so that it is easy to visualize
 
