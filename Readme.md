@@ -17,7 +17,7 @@ If you are applying for the Frontend Developer position, completing the above re
 
 At Airspace Link, we feel strongly about good communication. Make sure to provide a short `README.md` which explains your approach. Pay attention to grammar; good writing will always win us over. You also might include a list of ideas you'd love to tackle if you had infinite time to work on the app.
 
-This challenge should not take more than 2-3 hours. You have the base requirements, but feel free to go above and beyond as this is your chance to show off your skills and creativity! We understand that doing your best work can often take significant time, but please try to finish within one week. When it's ready, send us a link to the completed project. Please make your repo private and give access to `fieldsco` and `ddbradshaw`.
+This challenge should not take more than 2-3 hours. You now have the base requirements, but we **strongly** encourage going above and beyond by choosing an extra credit idea below. This is your chance to show off your skills and creativity! We understand that doing your best work can often take significant time, but please try to finish within one week. When it's ready, send us a link to the completed project. Please make your repo private and give access to `fieldsco` and `ddbradshaw`.
 
 #### Extra credit ideas
 
