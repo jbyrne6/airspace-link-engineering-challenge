@@ -21,7 +21,7 @@ This challenge should not take more than 2-3 hours. You now have the base requir
 
 #### Extra credit ideas
 
-- Deploy your project to [GitHub Pages](https://pages.github.com/)
+- Deploy your project to [GitHub Pages](https://pages.github.com/) (We acknowledge that in order to do this, you can't make your repo private. That's ok.)
 - Update the intersection graphic and computed area when the sketch is moved (i.e. clicked and dragged)
 - Provide a layer control to toggle the visibility of your flight area
 - Add unit/snapshot tests
