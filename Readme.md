@@ -10,6 +10,7 @@ We have provided a starter web application that has just about everything you ne
 - Display a message in the `Info` component indicating whether this flight will be denied (**it intersects**) or approved (**it does not intersect**)
 - Display the area (in sq meters or sq kilometers) of the intersection, if any
 - It'd also be great to see the intersection shape highlighted with a different color so that it is easy to visualize
+- When you are finished, run `yarn lint` and fix any linting errors that may have been introduced by your code
 
 #### Notes
 
@@ -21,6 +22,7 @@ This challenge should not take more than 2-3 hours. You now have the base requir
 
 #### Extra credit ideas
 
+- Spin up a simple API to handle the "Can I Fly?" logic
 - Deploy your project to [GitHub Pages](https://pages.github.com/) (We acknowledge that in order to do this, you can't make your repo private. That's ok.)
 - Update the intersection graphic and computed area when the sketch is moved (i.e. clicked and dragged)
 - Provide a layer control to toggle the visibility of your flight area
