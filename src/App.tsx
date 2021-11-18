@@ -3,6 +3,7 @@ import Map from './components/Map';
 import styled from 'styled-components';
 import { useStore } from './stores/RootStore';
 import { observer } from 'mobx-react-lite';
+import { Row } from 'antd';
 
 const Info = styled.p`
   position: absolute;
@@ -21,7 +22,9 @@ const App = () => {
   return (
     <>
       {/* HINT: you can bind to properties in the map store like this: */}
-      <Info>{`Sketch State: ${mapStore.sketchState}`}</Info>
+      <Info>
+        <Row>{`Sketch State: ${mapStore.sketchState}`}</Row>
+      </Info>
       <Map />
     </>
   );

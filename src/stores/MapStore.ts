@@ -16,6 +16,7 @@ export default class MapStore {
   sketchLayer!: __esri.GraphicsLayer;
   sketch!: __esri.Sketch;
   sketchState!: string;
+  flightDenied!: string;
 
   constructor(rootStore: RootStore) {
     // HINT: you can add additional observable properties to this class
@@ -107,11 +108,10 @@ export default class MapStore {
   sketchCreate = async (event: __esri.SketchCreateEvent) => {
     this.setSketchState(event.state);
     if (event.state !== 'complete') return;
+    const eventGeometry = event.graphic.geometry
 
     // THERE ARE 3 STEPS TO SATISFYING THE BASE REQUIREMENTS FOR THE CHALLENGE
     // STEP 1: determine if the sketch's graphic intersects with the graphic in the noFlyLayer
-    // STEP 2: if it intersects, compute the area of the intersection, and display it
-    // STEP 3: create a new graphic with any possible intersection, and display it on the map
 
     // HINT: the event has a graphic property which has a geometry property
     // https://developers.arcgis.com/javascript/latest/api-reference/esri-geometry-Geometry.html
@@ -120,20 +120,49 @@ export default class MapStore {
     // https://developers.arcgis.com/javascript/latest/api-reference/esri-core-Collection.html#getItemAt
     // https://developers.arcgis.com/javascript/latest/api-reference/esri-Graphic.html
 
+    const noFlyZone = this.noFlyLayer.graphics.getItemAt(0).geometry
+
+    const eventGeometryOverlaps = geometryEngine.overlaps(eventGeometry, noFlyZone)
+    // STEP 2: if it intersects, compute the area of the intersection, and display it
+
     // HINT: you can use the geometry engine to calculate the intersection of two geometries
     // https://developers.arcgis.com/javascript/latest/api-reference/esri-geometry-geometryEngine.html#intersect
 
     // HINT: you can use the geometry engine to calculate area of a polygon
     // https://developers.arcgis.com/javascript/latest/api-reference/esri-geometry-geometryEngine.html#geodesicArea
+    if (eventGeometryOverlaps) {
+      const eventGeometryIntersection = geometryEngine.intersect(eventGeometry, noFlyZone)
+  
+      // intersection area in square miles
+      const intersectionArea = geometryEngine.geodesicArea(eventGeometryIntersection, "square-miles")
+  
+      // STEP 3: create a new graphic with any possible intersection, and display it on the map
 
-    // HINT: you can create a graphic using a Graphic object
-    // https://developers.arcgis.com/javascript/latest/api-reference/esri-Graphic.html#symbol
+      // HINT: you can create a graphic using a Graphic object
+      // https://developers.arcgis.com/javascript/latest/api-reference/esri-Graphic.html#symbol
 
-    // HINT: you can provide a symbol when creating this graphic to change its appearance
-    // https://developers.arcgis.com/javascript/latest/sample-code/playground/live/index.html#/config=symbols/2d/SimpleFillSymbol.json
+      // HINT: you can provide a symbol when creating this graphic to change its appearance
+      // https://developers.arcgis.com/javascript/latest/sample-code/playground/live/index.html#/config=symbols/2d/SimpleFillSymbol.json
 
-    // HINT: you can add a new Graphic to this.sketchLayer to display it on the map
-    // https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-GraphicsLayer.html#add
+      // HINT: you can add a new Graphic to this.sketchLayer to display it on the map
+      // https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-GraphicsLayer.html#add
+      const overlapSymbol = {
+        type: 'simple-fill',
+        color: [255, 0, 0, 0.2],
+        style: 'solid',
+        outline: {
+          color: 'white',
+          width: 2,
+        },
+      };
+
+      let overlapGraphic = new Graphic({
+        geometry: eventGeometryIntersection,
+        symbol: overlapSymbol
+      });
+  
+      this.sketchLayer.add(overlapGraphic)
+    }
   };
 
   cleanup() {
