@@ -7,7 +7,6 @@ import * as geometryEngine from '@arcgis/core/geometry/geometryEngine';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import Graphic from '@arcgis/core/Graphic';
 import Polygon from '@arcgis/core/geometry/Polygon';
-import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
 
 export default class MapStore {
   rootStore: RootStore;
@@ -176,7 +175,7 @@ export default class MapStore {
         },
       };
 
-      let overlapFillGraphic = new Graphic({
+      const overlapFillGraphic = new Graphic({
         geometry: eventGeometryIntersection,
         symbol: overlapFillSymbol
       });
