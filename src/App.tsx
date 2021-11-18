@@ -24,6 +24,8 @@ const App = () => {
       {/* HINT: you can bind to properties in the map store like this: */}
       <Info>
         <Row>{`Sketch State: ${mapStore.sketchState}`}</Row>
+        <Row>{`Flight Denied: ${mapStore.flightStatus}`}</Row>
+        <Row>{`Area Within No-Fly Zone: ${mapStore.restrictedArea} km^2`}</Row>
       </Info>
       <Map />
     </>

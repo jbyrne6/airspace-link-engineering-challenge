@@ -16,18 +16,31 @@ export default class MapStore {
   sketchLayer!: __esri.GraphicsLayer;
   sketch!: __esri.Sketch;
   sketchState!: string;
-  flightDenied!: string;
+  flightStatus!: string;
+  restrictedArea!: number;
 
   constructor(rootStore: RootStore) {
     // HINT: you can add additional observable properties to this class
     // https://mobx.js.org/observable-state.html
     makeObservable(this, { sketchState: observable, setSketchState: action });
+    makeObservable(this, { flightStatus: observable, setFlightStatus: action });
+    makeObservable(this, { restrictedArea: observable, setRestrictedArea: action });
     this.rootStore = rootStore;
     this.setSketchState('idle');
+    this.setFlightStatus('unknown');
+    this.setRestrictedArea(0);
   }
 
   setSketchState(state: string) {
     this.sketchState = state;
+  }
+
+  setFlightStatus(state: string) {
+    this.flightStatus = state;
+  }
+
+  setRestrictedArea(state: number) {
+    this.restrictedArea = state;
   }
 
   constructMap(container: string) {
@@ -123,6 +136,9 @@ export default class MapStore {
     const noFlyZone = this.noFlyLayer.graphics.getItemAt(0).geometry
 
     const eventGeometryOverlaps = geometryEngine.overlaps(eventGeometry, noFlyZone)
+    const flightStatusString = eventGeometryOverlaps ? 'denied' : 'approved'
+    console.log(flightStatusString)
+    this.setFlightStatus(flightStatusString)
     // STEP 2: if it intersects, compute the area of the intersection, and display it
 
     // HINT: you can use the geometry engine to calculate the intersection of two geometries
@@ -133,8 +149,12 @@ export default class MapStore {
     if (eventGeometryOverlaps) {
       const eventGeometryIntersection = geometryEngine.intersect(eventGeometry, noFlyZone)
   
-      // intersection area in square miles
-      const intersectionArea = geometryEngine.geodesicArea(eventGeometryIntersection, "square-miles")
+      // intersection area in square kilometers
+      const intersectionArea = geometryEngine.geodesicArea(eventGeometryIntersection, "square-kilometers")
+      const intersectionAreaRounded = Number.parseFloat(Number.parseFloat(intersectionArea).toFixed(2))
+      console.log(intersectionArea)
+      console.log(intersectionAreaRounded)
+      this.setRestrictedArea(intersectionAreaRounded)
   
       // STEP 3: create a new graphic with any possible intersection, and display it on the map
 
@@ -146,7 +166,7 @@ export default class MapStore {
 
       // HINT: you can add a new Graphic to this.sketchLayer to display it on the map
       // https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-GraphicsLayer.html#add
-      const overlapSymbol = {
+      const overlapFillSymbol = {
         type: 'simple-fill',
         color: [255, 0, 0, 0.2],
         style: 'solid',
@@ -156,12 +176,13 @@ export default class MapStore {
         },
       };
 
-      let overlapGraphic = new Graphic({
+      let overlapFillGraphic = new Graphic({
         geometry: eventGeometryIntersection,
-        symbol: overlapSymbol
+        symbol: overlapFillSymbol
       });
+
   
-      this.sketchLayer.add(overlapGraphic)
+      this.sketchLayer.add(overlapFillGraphic)
     }
   };
 
@@ -169,5 +190,7 @@ export default class MapStore {
     // Todo, remove any listeners
     this.sketch.destroy();
     this.setSketchState('idle');
+    this.setFlightStatus('unknown')
+    this.setRestrictedArea(0)
   }
 }
