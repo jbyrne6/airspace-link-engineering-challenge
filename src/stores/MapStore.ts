@@ -44,6 +44,17 @@ export default class MapStore {
     this.flightZoneSketches = state;
   }
 
+  findSmallestMissing(arr: Array<number>) {
+    let count = 1;
+    if(!arr?.length){
+       return count;
+    };
+    while(arr.indexOf(count) !== -1){
+       count++;
+    };
+    return count;
+ };
+
   constructMap(container: string) {
     this.sketchLayer = new GraphicsLayer();
     this.noFlyLayer = new GraphicsLayer();
@@ -126,8 +137,9 @@ export default class MapStore {
     if (event.state !== 'complete') return;
     const eventGeometry = event.graphic.geometry
     const eventGraphic = event.graphic
-    const existingSketches = this.sketchLayer.graphics.filter(graphic => graphic.sketchType == 'full-sketch')
-    eventGraphic.graphicId = existingSketches.length + 1
+    const existingSketchIds = this.sketchLayer.graphics.filter(graphic => graphic.sketchType == 'full-sketch').map(graphic => graphic.graphicId)
+    // set the graphic id drawn to the lowest id that is not yet used (can re-use id's of graphics that have been deleted)
+    eventGraphic.graphicId = this.findSmallestMissing(existingSketchIds)
     eventGraphic.sketchType = 'full-sketch' 
     eventGraphic.intersectionArea = 0
 
@@ -139,8 +151,6 @@ export default class MapStore {
     const flightStatusString = eventGeometryOverlaps ? 'denied' : 'approved'
     this.setFlightStatus(flightStatusString)
     eventGraphic.flightStatus = flightStatusString
-    console.log(flightStatusString)
-    console.log(eventGraphic)
 
     // STEP 2: if it intersects, compute the area of the intersection, and display it
     if (eventGeometryOverlaps) {
@@ -178,8 +188,7 @@ export default class MapStore {
     }
     // add full sketch graphic to exposed variable
     const fullSketchGraphics = this.sketchLayer.graphics.items.filter(graphic => graphic.sketchType == 'full-sketch')
-    console.log(fullSketchGraphics)
-    this.setFlightZoneSketches(fullSketchGraphics)
+    this.setFlightZoneSketches(fullSketchGraphics.sort((a: number,b: number) => a.graphicId - b.graphicId))
   };
 
   sketchMove = async (event: __esri.SketchUpdateEvent) => {
@@ -193,8 +202,6 @@ export default class MapStore {
       const flightStatusString = eventGeometryOverlaps ? 'denied' : 'approved'
       this.setFlightStatus(flightStatusString)
       eventGraphic.flightStatus = flightStatusString
-      console.log(flightStatusString)
-      console.log(eventGraphic)
 
       // cleans up left over restricted area when you move area out of no-fly zone
       if (!eventGeometryOverlaps) {
@@ -230,6 +237,9 @@ export default class MapStore {
         this.sketchLayer.removeMany(restrictedAreaGraphics)
         this.sketchLayer.add(overlapFillGraphic)
       }
+      // add full sketch graphic to exposed variable
+      const fullSketchGraphics = this.sketchLayer.graphics.items.filter(graphic => graphic.sketchType == 'full-sketch')
+      this.setFlightZoneSketches(fullSketchGraphics.sort((a: number,b: number) => a.graphicId - b.graphicId))
     }
   }
 
@@ -240,6 +250,9 @@ export default class MapStore {
       const graphicsToBeDeleted = (this.sketchLayer.graphics.items).filter(graphic => graphic.sketchType == 'overlap'  && graphic.associatedGraphicId == deletedGraphicId)
       this.sketchLayer.removeMany(graphicsToBeDeleted)
     })
+    // add full sketch graphic to exposed variable
+    const fullSketchGraphics = this.sketchLayer.graphics.items.filter(graphic => graphic.sketchType == 'full-sketch')
+    this.setFlightZoneSketches(fullSketchGraphics.sort((a: number,b: number) => a.graphicId - b.graphicId))
   }
   
   cleanup() {
