@@ -25,7 +25,7 @@ const App = () => {
       <Info>
         <Row>{`Sketch State: ${mapStore.sketchState}`}</Row>
         <Row>{`Flight Denied: ${mapStore.flightStatus}`}</Row>
-        <Row>{`Area Within No-Fly Zone: ${mapStore.restrictedArea} km^2`}</Row>
+        {/* <Row>{`Area Within No-Fly Zone: ${mapStore.totalRestrictedArea} km^2`}</Row> */}
       </Info>
       <Map />
     </>

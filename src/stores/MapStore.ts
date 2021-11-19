@@ -16,18 +16,20 @@ export default class MapStore {
   sketch!: __esri.Sketch;
   sketchState!: string;
   flightStatus!: string;
-  restrictedArea!: number;
+  totalRestrictedArea!: number;
+  flightZoneSketches!: Array<Graphic>;
+
 
   constructor(rootStore: RootStore) {
     // HINT: you can add additional observable properties to this class
     // https://mobx.js.org/observable-state.html
     makeObservable(this, { sketchState: observable, setSketchState: action });
     makeObservable(this, { flightStatus: observable, setFlightStatus: action });
-    makeObservable(this, { restrictedArea: observable, setRestrictedArea: action });
+    makeObservable(this, { flightZoneSketches: observable, setFlightZoneSketches: action });
     this.rootStore = rootStore;
     this.setSketchState('idle');
     this.setFlightStatus('unknown');
-    this.setRestrictedArea(0);
+    this.setFlightZoneSketches([]);
   }
 
   setSketchState(state: string) {
@@ -38,8 +40,8 @@ export default class MapStore {
     this.flightStatus = state;
   }
 
-  setRestrictedArea(state: number) {
-    this.restrictedArea = state;
+  setFlightZoneSketches(state: Array<Graphic>) {
+    this.flightZoneSketches = state;
   }
 
   constructMap(container: string) {
@@ -114,6 +116,8 @@ export default class MapStore {
       view.ui.add(this.sketch, 'top-right');
 
       this.sketch.on('create', this.sketchCreate);
+      this.sketch.on('update', this.sketchMove);
+      this.sketch.on('delete', this.sketchDelete);
     });
   }
 
@@ -121,75 +125,128 @@ export default class MapStore {
     this.setSketchState(event.state);
     if (event.state !== 'complete') return;
     const eventGeometry = event.graphic.geometry
+    const eventGraphic = event.graphic
+    const existingSketches = this.sketchLayer.graphics.filter(graphic => graphic.sketchType == 'full-sketch')
+    eventGraphic.graphicId = existingSketches.length + 1
+    eventGraphic.sketchType = 'full-sketch' 
+    eventGraphic.intersectionArea = 0
 
     // THERE ARE 3 STEPS TO SATISFYING THE BASE REQUIREMENTS FOR THE CHALLENGE
     // STEP 1: determine if the sketch's graphic intersects with the graphic in the noFlyLayer
-
-    // HINT: the event has a graphic property which has a geometry property
-    // https://developers.arcgis.com/javascript/latest/api-reference/esri-geometry-Geometry.html
-
-    // HINT: you can use getItemAt to access one of the graphics of the noFlyLayer.
-    // https://developers.arcgis.com/javascript/latest/api-reference/esri-core-Collection.html#getItemAt
-    // https://developers.arcgis.com/javascript/latest/api-reference/esri-Graphic.html
-
     const noFlyZone = this.noFlyLayer.graphics.getItemAt(0).geometry
 
     const eventGeometryOverlaps = geometryEngine.overlaps(eventGeometry, noFlyZone)
     const flightStatusString = eventGeometryOverlaps ? 'denied' : 'approved'
-    console.log(flightStatusString)
     this.setFlightStatus(flightStatusString)
+    eventGraphic.flightStatus = flightStatusString
+    console.log(flightStatusString)
+    console.log(eventGraphic)
+
     // STEP 2: if it intersects, compute the area of the intersection, and display it
-
-    // HINT: you can use the geometry engine to calculate the intersection of two geometries
-    // https://developers.arcgis.com/javascript/latest/api-reference/esri-geometry-geometryEngine.html#intersect
-
-    // HINT: you can use the geometry engine to calculate area of a polygon
-    // https://developers.arcgis.com/javascript/latest/api-reference/esri-geometry-geometryEngine.html#geodesicArea
     if (eventGeometryOverlaps) {
       const eventGeometryIntersection = geometryEngine.intersect(eventGeometry, noFlyZone)
   
       // intersection area in square kilometers
-      const intersectionArea = geometryEngine.geodesicArea(eventGeometryIntersection, "square-kilometers")
-      const intersectionAreaRounded = Number.parseFloat(Number.parseFloat(intersectionArea).toFixed(2))
-      console.log(intersectionArea)
-      console.log(intersectionAreaRounded)
-      this.setRestrictedArea(intersectionAreaRounded)
+      const intersectionArea = Number.parseFloat(geometryEngine.geodesicArea(eventGeometryIntersection, "square-kilometers"))
+      eventGraphic.intersectionArea = intersectionArea
+   
+      const restrictedAreas = (this.sketchLayer.graphics.items).filter(graphic => graphic.sketchType == 'full-sketch').map(flightZoneGraphic => flightZoneGraphic.intersectionArea)
+      // this.setTotalRestrictedArea(totalArea)
+
+      // const intersectionAreaRounded = Number.parseFloat(Number.parseFloat(intersectionArea).toFixed(2))
+      // this.setTotalRestrictedArea(intersectionAreaRounded)
   
       // STEP 3: create a new graphic with any possible intersection, and display it on the map
-
-      // HINT: you can create a graphic using a Graphic object
-      // https://developers.arcgis.com/javascript/latest/api-reference/esri-Graphic.html#symbol
-
-      // HINT: you can provide a symbol when creating this graphic to change its appearance
-      // https://developers.arcgis.com/javascript/latest/sample-code/playground/live/index.html#/config=symbols/2d/SimpleFillSymbol.json
-
-      // HINT: you can add a new Graphic to this.sketchLayer to display it on the map
-      // https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-GraphicsLayer.html#add
       const overlapFillSymbol = {
         type: 'simple-fill',
         color: [255, 0, 0, 0.2],
         style: 'solid',
         outline: {
-          color: 'white',
-          width: 2,
+          width: 0,
         },
       };
 
       const overlapFillGraphic = new Graphic({
         geometry: eventGeometryIntersection,
-        symbol: overlapFillSymbol
+        symbol: overlapFillSymbol,
+        associatedGraphicId: eventGraphic.graphicId,
+        sketchType: 'overlap'
       });
 
-  
+      // add graphic to layer
       this.sketchLayer.add(overlapFillGraphic)
     }
+    // add full sketch graphic to exposed variable
+    const fullSketchGraphics = this.sketchLayer.graphics.items.filter(graphic => graphic.sketchType == 'full-sketch')
+    console.log(fullSketchGraphics)
+    this.setFlightZoneSketches(fullSketchGraphics)
   };
 
+  sketchMove = async (event: __esri.SketchUpdateEvent) => {
+    const eventInfo = event.toolEventInfo;
+    if (eventInfo && eventInfo.type.includes("move")){
+      const eventGeometry = event.graphics[0].geometry
+      const eventGraphic = event.graphics[0]
+      const noFlyZone = this.noFlyLayer.graphics.getItemAt(0).geometry
+
+      const eventGeometryOverlaps = geometryEngine.overlaps(eventGeometry, noFlyZone)
+      const flightStatusString = eventGeometryOverlaps ? 'denied' : 'approved'
+      this.setFlightStatus(flightStatusString)
+      eventGraphic.flightStatus = flightStatusString
+      console.log(flightStatusString)
+      console.log(eventGraphic)
+
+      // cleans up left over restricted area when you move area out of no-fly zone
+      if (!eventGeometryOverlaps) {
+        const restrictedAreaGraphics = (this.sketchLayer.graphics.items).filter(graphic => graphic.sketchType == 'overlap'  && graphic.associatedGraphicId == eventGraphic.graphicId)
+        this.sketchLayer.removeMany(restrictedAreaGraphics)
+      }
+
+      if (eventGeometryOverlaps) {
+        const eventGeometryIntersection = geometryEngine.intersect(eventGeometry, noFlyZone)
+
+        // set new intersection area
+        const intersectionArea = Number.parseFloat(geometryEngine.geodesicArea(eventGeometryIntersection, "square-kilometers"))
+        eventGraphic.intersectionArea = intersectionArea
+
+        // create a new graphic with any possible intersection, and display it on the map
+        const overlapFillSymbol = {
+          type: 'simple-fill',
+          color: [255, 0, 0, 0.2],
+          style: 'solid',
+          outline: {
+            width: 0,
+          },
+          sketchType: 'full-sketch'
+        };
+
+        const overlapFillGraphic = new Graphic({
+          geometry: eventGeometryIntersection,
+          symbol: overlapFillSymbol,
+          associatedGraphicId: eventGraphic.graphicId,
+          sketchType: 'overlap'
+        });
+        const restrictedAreaGraphics = (this.sketchLayer.graphics.items).filter(graphic => graphic.sketchType == 'overlap'  && graphic.associatedGraphicId == eventGraphic.graphicId)
+        this.sketchLayer.removeMany(restrictedAreaGraphics)
+        this.sketchLayer.add(overlapFillGraphic)
+      }
+    }
+  }
+
+  sketchDelete = async (event: __esri.SketchDeleteEvent) => {
+    // remove the red restricted flight overlap graphic when the main graphic gets deleted
+    const graphicIdsDeleted = event.graphics.map(graphic => graphic.graphicId)
+    graphicIdsDeleted.forEach(deletedGraphicId => {
+      const graphicsToBeDeleted = (this.sketchLayer.graphics.items).filter(graphic => graphic.sketchType == 'overlap'  && graphic.associatedGraphicId == deletedGraphicId)
+      this.sketchLayer.removeMany(graphicsToBeDeleted)
+    })
+  }
+  
   cleanup() {
     // Todo, remove any listeners
     this.sketch.destroy();
     this.setSketchState('idle');
     this.setFlightStatus('unknown')
-    this.setRestrictedArea(0)
+    this.setFlightZoneSketches([])
   }
 }
