@@ -44,16 +44,17 @@ export default class MapStore {
     this.flightZoneSketches = state;
   }
 
+  // finds the smallest integer greater than zero not in an array
   findSmallestMissing(arr: Array<number>) {
     let count = 1;
     if(!arr?.length){
        return count;
-    };
+    }
     while(arr.indexOf(count) !== -1){
        count++;
-    };
+    }
     return count;
- };
+  }
 
   constructMap(container: string) {
     this.sketchLayer = new GraphicsLayer();
@@ -138,6 +139,7 @@ export default class MapStore {
     const eventGeometry = event.graphic.geometry
     const eventGraphic = event.graphic
     const existingSketchIds = this.sketchLayer.graphics.filter(graphic => graphic.sketchType == 'full-sketch').map(graphic => graphic.graphicId)
+
     // set the graphic id drawn to the lowest id that is not yet used (can re-use id's of graphics that have been deleted)
     eventGraphic.graphicId = this.findSmallestMissing(existingSketchIds)
     eventGraphic.sketchType = 'full-sketch' 
@@ -150,6 +152,7 @@ export default class MapStore {
     const eventGeometryOverlaps = geometryEngine.overlaps(eventGeometry, noFlyZone)
     const flightStatusString = eventGeometryOverlaps ? 'denied' : 'approved'
     this.setFlightStatus(flightStatusString)
+    // add current flight status to the graphic
     eventGraphic.flightStatus = flightStatusString
 
     // STEP 2: if it intersects, compute the area of the intersection, and display it
@@ -159,12 +162,6 @@ export default class MapStore {
       // intersection area in square kilometers
       const intersectionArea = Number.parseFloat(geometryEngine.geodesicArea(eventGeometryIntersection, "square-kilometers"))
       eventGraphic.intersectionArea = intersectionArea
-   
-      const restrictedAreas = (this.sketchLayer.graphics.items).filter(graphic => graphic.sketchType == 'full-sketch').map(flightZoneGraphic => flightZoneGraphic.intersectionArea)
-      // this.setTotalRestrictedArea(totalArea)
-
-      // const intersectionAreaRounded = Number.parseFloat(Number.parseFloat(intersectionArea).toFixed(2))
-      // this.setTotalRestrictedArea(intersectionAreaRounded)
   
       // STEP 3: create a new graphic with any possible intersection, and display it on the map
       const overlapFillSymbol = {
@@ -183,7 +180,7 @@ export default class MapStore {
         sketchType: 'overlap'
       });
 
-      // add graphic to layer
+      // add restricted graphic to the sketch layer
       this.sketchLayer.add(overlapFillGraphic)
     }
     // add full sketch graphic to exposed variable
@@ -209,6 +206,7 @@ export default class MapStore {
         this.sketchLayer.removeMany(restrictedAreaGraphics)
       }
 
+      // if the geometry overlaps with a no-fly zone
       if (eventGeometryOverlaps) {
         const eventGeometryIntersection = geometryEngine.intersect(eventGeometry, noFlyZone)
 
@@ -233,8 +231,11 @@ export default class MapStore {
           associatedGraphicId: eventGraphic.graphicId,
           sketchType: 'overlap'
         });
+
         const restrictedAreaGraphics = (this.sketchLayer.graphics.items).filter(graphic => graphic.sketchType == 'overlap'  && graphic.associatedGraphicId == eventGraphic.graphicId)
+        // remove the any previous restricted graphics before adding the new one
         this.sketchLayer.removeMany(restrictedAreaGraphics)
+        // add the new restricted graphic
         this.sketchLayer.add(overlapFillGraphic)
       }
       // add full sketch graphic to exposed variable

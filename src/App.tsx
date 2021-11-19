@@ -27,7 +27,7 @@ const App = () => {
       <Info>
         {mapStore.flightZoneSketches.map((graphic, index) => {
           return (
-            <Col>
+            <Col key={index}>
               <Row>{`Flight Zone ID: ${graphic.graphicId}`}</Row>
               <Row>{`Flight Status: ${graphic.flightStatus}`}</Row>
               <Row>{`Restricted Zone Area: ${graphic.intersectionArea.toFixed(2)} ${'\u33A2'}`}</Row>
